@@ -42,6 +42,7 @@ require("packer").startup({
     end
 
     -- nvim-lsp configuration (it relies on cmp-nvim-lsp, so it should be loaded after cmp-nvim-lsp).
+    use { "williamboman/nvim-lsp-installer" }
     use({ "neovim/nvim-lspconfig", after = "cmp-nvim-lsp", config = [[require('config.lsp')]] })
 
     if vim.g.is_mac then
