@@ -122,7 +122,7 @@ set pumblend=10  " pseudo transparency for completion menu
 
 set winblend=5  " pseudo transparency for floating window
 
-" Insert mode key word completion setting
+" TODO: Insert mode key word completion setting
 set complete+=kspell complete-=w complete-=b complete-=u complete-=t
 
 set spelllang=en,cjk  " Spell languages
@@ -174,3 +174,7 @@ set diffopt+=context:3  " context for diff
 set diffopt+=internal,indent-heuristic,algorithm:histogram
 
 set nowrap  " do no wrap
+
+" set highlight
+set cursorline              "highlight current line
+set cursorcolumn            "highlight current column
