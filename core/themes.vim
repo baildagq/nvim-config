@@ -54,6 +54,18 @@ function! s:theme_setup_dict.kanagawa() dict abort
   colorscheme kanagawa
 endfunction
 
+function! s:theme_setup_dict.morning() dict abort
+  colorscheme morning
+endfunction
+
+function! s:theme_setup_dict.evening() dict abort
+  colorscheme evening
+endfunction
+
+function! s:theme_setup_dict.industry() dict abort
+  colorscheme industry
+endfunction
+
 " Theme to directory name mapping, because theme repo name is not necessarily
 " the same as the theme name itself.
 let s:theme2dir = {
@@ -67,10 +79,13 @@ let s:theme2dir = {
       \ 'everforest' :'everforest',
       \ 'nightfox': 'nightfox.nvim',
       \ 'kanagawa': 'kanagawa.nvim',
+      \ 'morning': 'morning',
+      \ 'evening': 'evening',
+      \ 'industry': 'industry',
       \ }
 
 " let s:theme = utils#RandElement(keys(s:theme2dir))
-let s:theme = "doom_one"
+let s:theme = "gruvbox8" "industry/gruvbox8/doom_one
 let s:colorscheme_func = printf('s:theme_setup_dict.%s()', s:theme)
 
 if !has_key(s:theme_setup_dict, s:theme)
@@ -79,11 +94,11 @@ if !has_key(s:theme_setup_dict, s:theme)
   finish
 endif
 
-let s:status = utils#add_pack(s:theme2dir[s:theme])
-if !s:status
-  echomsg printf("Theme %s not installed. Run PackerSync to install.", s:theme)
-  finish
-endif
+" let s:status = utils#add_pack(s:theme2dir[s:theme])
+" if !s:status
+"   echomsg printf("Theme %s not installed. Run PackerSync to install.", s:theme)
+"   finish
+" endif
 
 execute 'call ' . s:colorscheme_func
 if g:logging_level == 'info'

@@ -425,3 +425,7 @@ function! s:wilder_init() abort
     echohl Error |echomsg "Wilder.nvim missing: run :PackerSync to fix."|echohl None
   endtry
 endfunction
+
+""""""""""""""""""""""""""""""goyo.vim settings""""""""""""""""""""""""""""""
+let g:goyo_width = 120
+let g:goyo_height = 90

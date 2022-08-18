@@ -351,6 +351,9 @@ require("packer").startup({
     -- show and trim trailing whitespaces
     use {'jdhao/whitespace.nvim', event = 'VimEnter'}
 
+    -- distraction-free writing
+    use {'junegunn/goyo.vim'}
+
     -- file explorer
     use {
       'kyazdani42/nvim-tree.lua',
