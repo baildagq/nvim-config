@@ -1,23 +1,34 @@
 local utils = require("utils")
 local fn = vim.fn
 
-vim.g.package_home = fn.stdpath("data") .. "/site/pack/packer/"
-local packer_install_dir = vim.g.package_home .. "/opt/packer.nvim"
+-- The root dir to install all plugins. Plugins are under opt/ or start/ sub-directory.
+vim.g.plugin_home = fn.stdpath("data") .. "/site/pack/packer"
 
-local packer_repo = "https://github.com/wbthomason/packer.nvim"
-local install_cmd = string.format("10split |term git clone --depth=1 %s %s", packer_repo, packer_install_dir)
+-- Where to install packer.nvim -- the package manager (we make it opt)
+local packer_dir = vim.g.plugin_home .. "/opt/packer.nvim"
+
+-- Whether this is a fresh install, i.e., packer itself and plugins have not been installed.
+local fresh_install = false
 
 -- Auto-install packer in case it hasn't been installed.
-if fn.glob(packer_install_dir) == "" then
+if fn.glob(packer_dir) == "" then
+  fresh_install = true
+
+  -- Now we need to install packer.nvim first.
+  local packer_repo = "https://github.com/wbthomason/packer.nvim"
+  local install_cmd = string.format("!git clone --depth=1 %s %s", packer_repo, packer_dir)
+
   vim.api.nvim_echo({ { "Installing packer.nvim", "Type" } }, true, {})
   vim.cmd(install_cmd)
 end
 
 -- Load packer.nvim
 vim.cmd("packadd packer.nvim")
-local util = require('packer.util')
 
-require("packer").startup({
+local packer = require("packer")
+local packer_util = require('packer.util')
+
+packer.startup({
   function(use)
     -- it is recommened to put impatient.nvim before any other plugins
     use {'lewis6991/impatient.nvim', config = [[require('impatient')]]}
@@ -30,7 +41,7 @@ require("packer").startup({
 
     -- nvim-cmp completion sources
     use {"hrsh7th/cmp-nvim-lsp", after = "nvim-cmp"}
-    use {"hrsh7th/cmp-nvim-lua", after = "nvim-cmp"}
+    -- use {"hrsh7th/cmp-nvim-lua", after = "nvim-cmp"}
     use {"hrsh7th/cmp-path", after = "nvim-cmp"}
     use {"hrsh7th/cmp-buffer", after = "nvim-cmp"}
     use { "hrsh7th/cmp-omni", after = "nvim-cmp" }
@@ -120,6 +131,7 @@ require("packer").startup({
     use({"sainnhe/everforest", opt = true})
     use({"EdenEast/nightfox.nvim", opt = true})
     use({"rebelot/kanagawa.nvim", opt = true})
+    use({"catppuccin/nvim", as = "catppuccin", opt = true})
 
     -- Show git change (change, delete, add) signs in vim sign column
     use({"mhinz/vim-signify", event = 'BufEnter'})
@@ -137,7 +149,7 @@ require("packer").startup({
     use({ "akinsho/bufferline.nvim", event = "VimEnter", config = [[require('config.bufferline')]] })
 
     -- fancy start screen
-    -- use { 'goolord/alpha-nvim', event = 'VimEnter', config = [[require('config.alpha-nvim')]] }
+    -- use { 'glepnir/dashboard-nvim', event = "VimEnter", config = [[require('config.dashboard-nvim')]] }
 
     use({
       "lukas-reineke/indent-blankline.nvim",
@@ -184,13 +196,7 @@ require("packer").startup({
     -- use 'mg979/vim-visual-multi'
 
     -- Autosave files on certain events
-    use({
-      "Pocco81/AutoSave.nvim",
-      event = "VimEnter",
-      config = function()
-        vim.defer_fn(function() require('config.autosave') end, 1500)
-      end
-    })
+    use({"907th/vim-auto-save", event = "InsertEnter"})
 
     -- Show undo history visually
     use({"simnalamburt/vim-mundo", cmd = {"MundoToggle", "MundoShow"}})
@@ -360,14 +366,25 @@ require("packer").startup({
       requires = { 'kyazdani42/nvim-web-devicons' },
       config = [[require('config.nvim-tree')]]
     }
+
+    use { 'ii14/emmylua-nvim', ft = 'lua' }
+
+    use { 'j-hui/fidget.nvim', after = 'nvim-lspconfig', config = [[require('config.fidget-nvim')]]}
   end,
   config = {
     max_jobs = 16,
-    compile_path = util.join_paths(fn.stdpath('data'), 'site', 'lua', 'packer_compiled.lua'),
+    compile_path = packer_util.join_paths(fn.stdpath('data'), 'site', 'lua', 'packer_compiled.lua'),
   },
 })
 
-local status, _ = pcall(require, 'packer_compiled')
-if not status then
+-- For fresh install, we need to install plugins. Otherwise, we just need to require `packer_compiled.lua`.
+if fresh_install then
+  -- We can command `PackerSync` here, because only after packer.startup, we can know what plugins to install.
+  -- So plugin install should be done after the startup process.
+  vim.cmd("PackerSync")
+else
+  local status, _ = pcall(require, 'packer_compiled')
+  if not status then
   vim.notify("Error requiring packer_compiled.lua: run PackerSync to fix!")
+  end
 end

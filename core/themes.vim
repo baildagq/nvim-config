@@ -66,6 +66,13 @@ function! s:theme_setup_dict.industry() dict abort
   colorscheme industry
 endfunction
 
+" function! s:theme_setup_dict.catppuccin() dict abort
+"   let g:catppuccin_flavour = "frappe" " latte, frappe, macchiato, mocha
+"
+"   lua require("catppuccin").setup()
+"   colorscheme catppuccin
+" endfunction
+
 " Theme to directory name mapping, because theme repo name is not necessarily
 " the same as the theme name itself.
 let s:theme2dir = {
@@ -81,7 +88,7 @@ let s:theme2dir = {
       \ 'kanagawa': 'kanagawa.nvim',
       \ 'morning': 'morning',
       \ 'evening': 'evening',
-      \ 'industry': 'industry',
+      \ 'industry': 'industry'
       \ }
 
 " let s:theme = utils#RandElement(keys(s:theme2dir))
@@ -101,7 +108,7 @@ endif
 " endif
 
 execute 'call ' . s:colorscheme_func
-if g:logging_level == 'info'
+if g:logging_level == 'debug'
   let s:msg1 = "Colorscheme: " . s:theme
   call v:lua.vim.notify(s:msg1, 'info', {'title': 'nvim-config'})
 endif
